@@ -13,7 +13,7 @@ const alturaNave = nave.offsetHeight;
 
 const velocidadeNave = 15;
 const velocidadeTiro = 20;
-const velocidadeNaveInimagas = 6;
+const velocidadeNaveInimigas = 6;
 
 let estaAtirando = false;
 
@@ -119,7 +119,7 @@ const audioTiros = () => {
     audioDoTiro.className = "audiotiro";
     audioDoTiro.setAttribute("src", "tiro.mp3");
     audioDoTiro.play();
-    cenario.appendChild(audioTiro);
+    cenario.appendChild(audioDoTiro);
     audioDoTiro.addEventListener("ended", () => {
         audioDoTiro.remove();
     });
@@ -157,11 +157,11 @@ const naveInimigas = () => {
 
 const moveNaveInimigas = () => {
     const naveInimigas = document.querySelectorAll(".inimigo");
-    for(let i = 0; i < naveInimigas.length; i += 1) {
-        if(navesInimigas[i]) {
+    for(let i = 0; i < naveInimigas.length; i++) {
+        if(naveInimigas[i]) {
             let posicaoTopNaveInimiga = naveInimigas[i].offsetTop;
             let posicaoLeftNaveInimiga = naveInimigas[i].offsetLeft;
-            posicaoTopNaveInimiga += velocidadeNaveInimiga + "px";
+            posicaoTopNaveInimiga += velocidadeNaveInimigas;
             naveInimigas[i].style.top = posicaoTopNaveInimiga + "px";
             if(posicaoTopNaveInimiga > alturaCenario) {
                 vidaAtual -= 5;
@@ -213,7 +213,7 @@ const explosaoNaveInimigaDestruida = (posicaoLeftNaveInimiga) => {
 const audioExplosoes = () => {
     const audioExplosaoNaveInimiga = document.createElement("audio");
     audioExplosaoNaveInimiga.className = "audioexplosoes";
-    audioExplosaoNaveInimiga.setAttribute("src", "destruidod.mp3");
+    audioExplosaoNaveInimiga.setAttribute("src", "destruido.mp3");
     audioExplosaoNaveInimiga.play();
     cenario.appendChild(audioExplosaoNaveInimiga);
     audioExplosaoNaveInimiga.addEventListener("ended", () => {
@@ -226,7 +226,7 @@ const colisao = () => {
     const todosTiros = document.querySelectorAll(".tiro");
     todasNavesInimigas.forEach((naveInimiga) => {
         todosTiros.forEach((tiro) => {
-            const colisaoNaveInimiga = naveInimiga.getBoundingClientReact();
+            const colisaoNaveInimiga = naveInimiga.getBoundingClientRect();
             const colisaoTiro = tiro.getBoundingClientRect();
             const posicaoNaveInimigaLeft = naveInimiga.offsetLeft;
             const posicaoNaveInimigaTop = naveInimiga.offsetTop;
@@ -258,19 +258,20 @@ const iniciarJogo = () => {
     document.addEventListener("keyup", teclaSolta);
     checaMoveNave = setInterval(moveNave, 50);
     checaMoveTiros = setInterval(moveTiros, 50);
-    checaMoveNaveInimigas = setInterval(moveTiros, 50);
-    checaColisao = setInterval(colisao, 50);
-    checaNaveInimigas = setInterval(naveInimigas, 50);
-    checaTiros = setInterval(atirar, 50);
+    checaMoveNaveInimigas = setInterval(moveNaveInimigas, 50);
+    checaColisao = setInterval(colisao, 10);
+    checaNaveInimigas = setInterval(naveInimigas, 1000);
+    checaTiros = setInterval(atirar, 10);
     botaoIniciar.style.display = "none";
-    cenario.style,animation = "animarCenario 10s infinite linear";
+    cenario.style.animation = "animarCenario 10s infinite linear";
     audioJogo.loop = true;
     audioJogo.play();
+    audioJogo.volume = 0.1;
 }
 
 const gameOver = () => {
     document.removeEventListener("keydown", teclaPressionada);
-    document.removeEventLitener("keyup", teclaSolta);
+    document.removeEventListener("keyup", teclaSolta);
     clearInterval(checaMoveNaveInimigas);
     clearInterval(checaNaveInimigas);
     clearInterval(checaMoveTiros);
@@ -278,7 +279,7 @@ const gameOver = () => {
     clearInterval(checaColisao);
     const perdeu = document.createElement("div");
     perdeu.style.position = "absolute";
-    perdeu.innetHTML = "Fim de Jogo";
+    perdeu.innerHTML = "Fim de Jogo";
     perdeu.style.backgroundColor = "black";
     perdeu.style.color = "red";
     perdeu.style.left = "50%";
